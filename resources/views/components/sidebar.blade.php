@@ -41,19 +41,21 @@
                     Reports
                 </a>
             </li>
+            @if(auth()->check() && auth()->user()->role === 'admin')
             <li class="nav-item">
                 <a href="{{ route('users.index') }}" class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}">
                     <i class="fas fa-users me-2" style="width: 20px;"></i>
                     User Management
                 </a>
             </li>
+            @endif
         </ul>
     </nav>
 
     <div class="p-3 border-top">
-        <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-2" data-bs-toggle="modal" data-bs-target="#addItemModal">
+        <a href="{{ route('items.index', ['add' => true]) }}" class="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-2">
             <i class="fas fa-plus"></i>
             Add New SKU
-        </button>
+        </a>
     </div>
 </aside>

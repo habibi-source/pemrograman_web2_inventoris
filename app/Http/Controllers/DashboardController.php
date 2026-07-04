@@ -53,4 +53,39 @@ class DashboardController extends Controller
 
         return compact('days', 'incoming', 'outgoing');
     }
+
+    public function export()
+    {
+        $items = Item::with('category')->get();
+        
+        $filename = "inventory_report_" . date('Y-m-d_H-i-s') . ".csv";
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $columns = ['Item Code', 'Name', 'Category', 'Unit Price', 'Stock Level', 'Status'];
+
+        $callback = function() use($items, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($items as $item) {
+                fputcsv($file, [
+                    $item->item_code,
+                    $item->name,
+                    $item->category->name ?? 'N/A',
+                    $item->unit_price,
+                    $item->stock_level,
+                    $item->status
+                ]);
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }

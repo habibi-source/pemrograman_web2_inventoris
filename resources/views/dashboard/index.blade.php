@@ -18,9 +18,9 @@
         <button class="btn btn-outline-primary btn-sm">
             <i class="fas fa-calendar me-1"></i>Last 24 Hours
         </button>
-        <button class="btn btn-primary btn-sm">
+        <a href="{{ route('dashboard.export') }}" class="btn btn-primary btn-sm">
             <i class="fas fa-download me-1"></i>Export Report
-        </button>
+        </a>
     </div>
 </div>
 
@@ -104,7 +104,9 @@
                         </div>
                     </div>
                 </div>
-                <canvas id="stockChart" height="200"></canvas>
+                <div style="position: relative; height: 250px; width: 100%;">
+                    <canvas id="stockChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -181,6 +183,44 @@
                 @endforelse
             </tbody>
         </table>
+    </div>
+</div>
+
+<div class="modal fade" id="restockModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form method="POST" action="{{ route('transactions.store') }}">
+            @csrf
+            <input type="hidden" name="type" value="incoming">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <h5 class="modal-title fw-bold">Quick Restock</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label text-muted small text-uppercase">Select Low Stock Item</label>
+                        <select name="item_id" class="form-select" required>
+                            <option value="">-- Choose Item --</option>
+                            @foreach($lowStockItems as $item)
+                                <option value="{{ $item->id }}">{{ $item->item_code }} - {{ $item->name }} (Current: {{ $item->stock_level }})</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small text-uppercase">Restock Quantity</label>
+                        <input type="number" name="quantity" class="form-control" min="1" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small text-uppercase">Notes</label>
+                        <input type="text" name="notes" class="form-control" placeholder="Optional notes">
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0 pt-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit Restock</button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 @endsection

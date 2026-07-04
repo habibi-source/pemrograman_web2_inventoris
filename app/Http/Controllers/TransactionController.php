@@ -76,4 +76,68 @@ class TransactionController extends Controller
         return redirect()->route('transactions.index')
             ->with('success', 'Transaction recorded successfully.');
     }
+
+    public function export()
+    {
+        $transactions = Transaction::with(['item', 'user'])->latest()->get();
+        
+        $filename = "transactions_export_" . date('Y-m-d_H-i-s') . ".csv";
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $columns = ['ID', 'Type', 'Item Code', 'Item Name', 'Quantity', 'Location', 'Reference', 'Status', 'Operator', 'Date'];
+
+        $callback = function() use($transactions, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($transactions as $trx) {
+                fputcsv($file, [
+                    $trx->id,
+                    $trx->type,
+                    $trx->item->item_code ?? 'N/A',
+                    $trx->item->name ?? 'N/A',
+                    $trx->quantity,
+                    $trx->location,
+                    $trx->reference,
+                    $trx->status,
+                    $trx->user->name ?? 'System',
+                    $trx->created_at->format('Y-m-d H:i:s')
+                ]);
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function destroy(Transaction $transaction)
+    {
+        $item = $transaction->item;
+        
+        if ($item) {
+            if ($transaction->type == 'incoming') {
+                $item->decrement('stock_level', $transaction->quantity);
+            } else {
+                $item->increment('stock_level', $transaction->quantity);
+            }
+
+            $item->status = match (true) {
+                $item->stock_level <= 0 => 'out_of_stock',
+                $item->stock_level <= 10 => 'low_stock',
+                default => 'in_stock',
+            };
+            $item->save();
+        }
+
+        $transaction->delete();
+
+        return redirect()->route('transactions.index')
+            ->with('success', 'Transaction deleted and stock reversed successfully.');
+    }
 }

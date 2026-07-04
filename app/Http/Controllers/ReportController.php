@@ -69,4 +69,26 @@ class ReportController extends Controller
 
         return compact('months', 'incoming', 'outgoing');
     }
+
+    public function print(Request $request)
+    {
+        $query = Transaction::with(['item', 'user']);
+
+        if ($request->filled('from_date')) {
+            $query->whereDate('created_at', '>=', $request->from_date);
+        }
+        if ($request->filled('to_date')) {
+            $query->whereDate('created_at', '<=', $request->to_date);
+        }
+        if ($request->filled('type') && $request->type != 'all') {
+            $query->where('type', $request->type);
+        }
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $transactions = $query->latest()->get();
+
+        return view('reports.print', compact('transactions'));
+    }
 }

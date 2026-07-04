@@ -8,6 +8,16 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            if (auth()->check() && auth()->user()->role !== 'admin') {
+                abort(403, 'Unauthorized action. Only admins can manage users.');
+            }
+            return $next($request);
+        });
+    }
+
     public function index()
     {
         $users = User::latest()->paginate(10);

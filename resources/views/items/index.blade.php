@@ -14,9 +14,9 @@
         <h2 class="fw-bold mb-0">Item Catalog</h2>
     </div>
     <div class="d-flex gap-2">
-        <button class="btn btn-outline-primary btn-sm">
+        <a href="{{ route('items.export') }}" class="btn btn-outline-primary btn-sm">
             <i class="fas fa-download me-1"></i>Export CSV
-        </button>
+        </a>
         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#itemModal">
             <i class="fas fa-plus me-1"></i>Add New Item
         </button>
@@ -265,5 +265,10 @@
         document.getElementById('itemForm').action = '{{ route("items.store") }}';
         document.getElementById('itemForm').reset();
     });
+
+    @if(request('add'))
+        const autoModal = new bootstrap.Modal(document.getElementById('itemModal'));
+        autoModal.show();
+    @endif
 </script>
 @endpush

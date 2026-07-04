@@ -91,9 +91,9 @@
                 <button class="btn btn-sm btn-outline-secondary">
                     <i class="fas fa-filter me-1"></i>Filter
                 </button>
-                <button class="btn btn-sm btn-outline-secondary">
+                <a href="{{ route('transactions.export') }}" class="btn btn-sm btn-outline-secondary">
                     <i class="fas fa-download me-1"></i>Export
-                </button>
+                </a>
             </li>
         </ul>
     </div>
@@ -154,7 +154,11 @@
                         <span class="badge {{ $statusClass }}">{{ ucfirst($trx->status) }}</span>
                     </td>
                     <td class="text-end">
-                        <button class="btn btn-sm btn-link text-muted"><i class="fas fa-ellipsis-v"></i></button>
+                        <form action="{{ route('transactions.destroy', $trx) }}" method="POST" class="d-inline"
+                              onsubmit="return confirm('Delete this transaction? This will reverse the stock changes.')">
+                            @csrf @method('DELETE')
+                            <button class="btn btn-sm btn-link text-danger p-1" title="Delete & Reverse Stock"><i class="fas fa-trash"></i></button>
+                        </form>
                     </td>
                 </tr>
                 @empty
