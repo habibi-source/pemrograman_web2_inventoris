@@ -1,0 +1,78 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+
+// Variables
+@import 'variables';
+
+// Bootstrap
+@import 'bootstrap/scss/bootstrap';
+
+// Font Awesome
+@import '@fortawesome/fontawesome-free/css/all.min.css';
+
+// Custom styles
+.sidebar {
+    width: $sidebar-width;
+    min-height: 100vh;
+
+    .nav-link {
+        color: #434653;
+        border-radius: $border-radius-lg;
+        padding: 0.5rem 1rem;
+        transition: all 0.2s ease;
+
+        &:hover {
+            background-color: #e5eeff;
+        }
+
+        &.active {
+            color: $primary;
+            font-weight: 600;
+            background-color: #eff4ff;
+            border-left: 2px solid $primary;
+        }
+    }
+}
+
+.content-area {
+    margin-left: $sidebar-width;
+    padding-top: 56px;
+    min-height: 100vh;
+}
+
+.stat-card {
+    transition: transform 0.2s;
+    &:hover {
+        transform: translateY(-2px);
+    }
+}
+
+.table-container {
+    max-height: calc(100vh - 300px);
+}
+
+.badge-status {
+    font-size: 0.75rem;
+    padding: 0.25em 0.6em;
+}
+
+.table > :not(caption) > * > * {
+    vertical-align: middle;
+}
+
+// Custom scrollbar
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #c3c6d5;
+    border-radius: 10px;
+    &:hover {
+        background: #94a3b8;
+    }
+}
