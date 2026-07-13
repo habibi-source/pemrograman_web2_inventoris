@@ -26,5 +26,6 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/transactions/{transaction}', [TransactionController::class, 'destroy'])->name('transactions.destroy');
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
     Route::get('/reports/print', [ReportController::class, 'print'])->name('reports.print');
+    Route::get('/users/export', [UserController::class, 'export'])->name('users.export');
     Route::resource('users', UserController::class)->except(['show']);
 });

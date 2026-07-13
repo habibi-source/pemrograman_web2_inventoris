@@ -61,7 +61,7 @@
             <div class="card-body">
                 <small class="text-muted">Total Value</small>
                 <h4 class="fw-bold mb-0">
-                    ${{ number_format(\App\Models\Item::sum(\DB::raw('unit_price * stock_level')), 2) }}
+                    Rp {{ number_format(\App\Models\Item::sum(\DB::raw('unit_price * stock_level')), 0, ',', '.') }}
                 </h4>
             </div>
         </div>
@@ -131,7 +131,7 @@
                     <td>
                         <span class="badge bg-light text-dark">{{ $item->category->name ?? 'N/A' }}</span>
                     </td>
-                    <td class="text-end font-monospace">${{ number_format($item->unit_price, 2) }}</td>
+                    <td class="text-end font-monospace">Rp {{ number_format($item->unit_price, 0, ',', '.') }}</td>
                     <td class="text-end font-monospace {{ $item->status == 'low_stock' ? 'text-danger fw-bold' : '' }}">
                         {{ number_format($item->stock_level) }} units
                     </td>

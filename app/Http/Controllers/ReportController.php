@@ -12,11 +12,8 @@ class ReportController extends Controller
     {
         $query = Transaction::with(['item', 'user']);
 
-        if ($request->filled('from_date')) {
-            $query->whereDate('created_at', '>=', $request->from_date);
-        }
-        if ($request->filled('to_date')) {
-            $query->whereDate('created_at', '<=', $request->to_date);
+        if ($request->filled('date')) {
+            $query->whereDate('created_at', $request->date);
         }
         if ($request->filled('type') && $request->type != 'all') {
             $query->where('type', $request->type);
@@ -74,11 +71,8 @@ class ReportController extends Controller
     {
         $query = Transaction::with(['item', 'user']);
 
-        if ($request->filled('from_date')) {
-            $query->whereDate('created_at', '>=', $request->from_date);
-        }
-        if ($request->filled('to_date')) {
-            $query->whereDate('created_at', '<=', $request->to_date);
+        if ($request->filled('date')) {
+            $query->whereDate('created_at', $request->date);
         }
         if ($request->filled('type') && $request->type != 'all') {
             $query->where('type', $request->type);

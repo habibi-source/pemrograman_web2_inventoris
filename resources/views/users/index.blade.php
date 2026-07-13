@@ -9,9 +9,9 @@
         <p class="text-muted">Manage system access, roles, and account permissions.</p>
     </div>
     <div class="d-flex gap-2">
-        <button class="btn btn-outline-primary btn-sm">
+        <a href="{{ route('users.export') }}" class="btn btn-outline-primary btn-sm">
             <i class="fas fa-download me-1"></i>Export List
-        </button>
+        </a>
         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#userModal">
             <i class="fas fa-user-plus me-1"></i>Create User
         </button>
@@ -167,8 +167,6 @@
                             <select name="role" id="user_role" class="form-select" required>
                                 <option value="staff">Staff</option>
                                 <option value="admin">Admin</option>
-                                <option value="manager">Manager</option>
-                                <option value="auditor">Auditor</option>
                             </select>
                         </div>
                         <div class="col-md-4">

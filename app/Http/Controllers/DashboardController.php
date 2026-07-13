@@ -5,29 +5,38 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Item;
 use App\Models\Transaction;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $totalItems = Item::count();
         $lowStock = Item::where('status', 'low_stock')->count();
         $outOfStock = Item::where('status', 'out_of_stock')->count();
         $totalCategories = Category::count();
 
-        $incomingToday = Transaction::where('type', 'incoming')
+        $trxQuery = Transaction::with(['item', 'user']);
+
+        if ($request->filled('from_date')) {
+            $trxQuery->whereDate('created_at', '>=', $request->from_date);
+        }
+        if ($request->filled('to_date')) {
+            $trxQuery->whereDate('created_at', '<=', $request->to_date);
+        }
+
+        $incomingToday = (clone $trxQuery)->where('type', 'incoming')
             ->whereDate('created_at', today())->count();
-        $outgoingToday = Transaction::where('type', 'outgoing')
+        $outgoingToday = (clone $trxQuery)->where('type', 'outgoing')
             ->whereDate('created_at', today())->count();
 
-        $recentTransactions = Transaction::with(['item', 'user'])
-            ->latest()->take(5)->get();
+        $recentTransactions = (clone $trxQuery)->latest()->take(5)->get();
 
         $lowStockItems = Item::with('category')
             ->whereIn('status', ['low_stock', 'out_of_stock'])
             ->take(5)->get();
 
-        $chartData = $this->getChartData();
+        $chartData = $this->getChartData($request);
 
         return view('dashboard.index', compact(
             'totalItems', 'lowStock', 'outOfStock', 'totalCategories',
@@ -36,7 +45,7 @@ class DashboardController extends Controller
         ));
     }
 
-    private function getChartData()
+    private function getChartData($request)
     {
         $days = [];
         $incoming = [];
@@ -45,18 +54,44 @@ class DashboardController extends Controller
         for ($i = 6; $i >= 0; $i--) {
             $date = now()->subDays($i);
             $days[] = $date->format('D');
-            $incoming[] = Transaction::where('type', 'incoming')
-                ->whereDate('created_at', $date)->count();
-            $outgoing[] = Transaction::where('type', 'outgoing')
-                ->whereDate('created_at', $date)->count();
+
+            $inq = Transaction::where('type', 'incoming')
+                ->whereDate('created_at', $date);
+            $out = Transaction::where('type', 'outgoing')
+                ->whereDate('created_at', $date);
+
+            if ($request->filled('from_date')) {
+                $inq->whereDate('created_at', '>=', $request->from_date);
+                $out->whereDate('created_at', '>=', $request->from_date);
+            }
+            if ($request->filled('to_date')) {
+                $inq->whereDate('created_at', '<=', $request->to_date);
+                $out->whereDate('created_at', '<=', $request->to_date);
+            }
+
+            $incoming[] = $inq->count();
+            $outgoing[] = $out->count();
         }
 
         return compact('days', 'incoming', 'outgoing');
     }
 
-    public function export()
+    public function export(Request $request)
     {
-        $items = Item::with('category')->get();
+        $query = Item::with('category');
+
+        if ($request->filled('from_date')) {
+            $query->whereHas('transactions', function ($q) use ($request) {
+                $q->whereDate('created_at', '>=', $request->from_date);
+            });
+        }
+        if ($request->filled('to_date')) {
+            $query->whereHas('transactions', function ($q) use ($request) {
+                $q->whereDate('created_at', '<=', $request->to_date);
+            });
+        }
+
+        $items = $query->get();
         
         $filename = "inventory_report_" . date('Y-m-d_H-i-s') . ".csv";
         $headers = [
@@ -78,7 +113,7 @@ class DashboardController extends Controller
                     $item->item_code,
                     $item->name,
                     $item->category->name ?? 'N/A',
-                    $item->unit_price,
+                    'Rp ' . number_format($item->unit_price, 0, ',', '.'),
                     $item->stock_level,
                     $item->status
                 ]);

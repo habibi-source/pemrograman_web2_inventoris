@@ -9,11 +9,6 @@
         <p class="text-muted">Real-time logistics analytics and movement history.</p>
     </div>
     <div class="d-flex align-items-center gap-2 bg-white p-2 rounded border shadow-sm">
-        <div class="d-flex align-items-center gap-1 pe-3 border-end">
-            <i class="fas fa-calendar text-muted"></i>
-            <small>Oct 01 - Oct 31, 2023</small>
-            <i class="fas fa-chevron-down text-muted" style="font-size: 0.75rem;"></i>
-        </div>
         <button class="btn btn-sm btn-link text-primary" onclick="openExportModal()">
             <i class="fas fa-file-pdf me-1"></i>Print/Export PDF
         </button>
@@ -115,16 +110,14 @@
         <h5 class="fw-bold mb-0">Historical Movement Table</h5>
         <div class="d-flex gap-2">
             <form method="GET" class="d-flex gap-2 align-items-center">
-                <input type="date" name="from_date" class="form-control form-control-sm"
-                       value="{{ request('from_date') }}" placeholder="From">
-                <input type="date" name="to_date" class="form-control form-control-sm"
-                       value="{{ request('to_date') }}" placeholder="To">
+                <input type="date" name="date" class="form-control form-control-sm"
+                       value="{{ request('date') }}" placeholder="Filter Date">
                 <select name="type" class="form-select form-select-sm">
                     <option value="all" {{ request('type') == 'all' ? 'selected' : '' }}>All Types</option>
                     <option value="incoming" {{ request('type') == 'incoming' ? 'selected' : '' }}>Inbound</option>
                     <option value="outgoing" {{ request('type') == 'outgoing' ? 'selected' : '' }}>Outbound</option>
                 </select>
-                <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-search"></i></button>
+                <button type="submit" class="btn btn-sm btn-outline-secondary"><i class="fas fa-search"></i></button>
             </form>
         </div>
     </div>

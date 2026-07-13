@@ -88,7 +88,7 @@
                 </a>
             </li>
             <li class="nav-item ms-auto d-flex align-items-center gap-2">
-                <button class="btn btn-sm btn-outline-secondary">
+                <button class="btn btn-sm btn-outline-secondary" type="button" onclick="toggleFilter()">
                     <i class="fas fa-filter me-1"></i>Filter
                 </button>
                 <a href="{{ route('transactions.export') }}" class="btn btn-sm btn-outline-secondary">
@@ -96,6 +96,34 @@
                 </a>
             </li>
         </ul>
+    </div>
+    <div id="filterForm" class="px-3 py-2 border-bottom bg-light" style="display: none;">
+        <form method="GET" class="row g-2 align-items-end">
+            <div class="col-auto">
+                <small class="fw-bold text-muted text-uppercase">Filter By:</small>
+            </div>
+            <div class="col-md-2">
+                <input type="date" name="date" class="form-control form-control-sm"
+                       value="{{ request('date') }}" placeholder="Filter Date">
+            </div>
+            <div class="col-md-2">
+                <select name="status" class="form-select form-select-sm">
+                    <option value="">All Status</option>
+                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                    <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
+                    <option value="verified" {{ request('status') == 'verified' ? 'selected' : '' }}>Verified</option>
+                    <option value="in_transit" {{ request('status') == 'in_transit' ? 'selected' : '' }}>In Transit</option>
+                    <option value="shipped" {{ request('status') == 'shipped' ? 'selected' : '' }}>Shipped</option>
+                    <option value="damaged" {{ request('status') == 'damaged' ? 'selected' : '' }}>Damaged</option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-sm btn-outline-primary" type="submit"><i class="fas fa-search"></i> Apply</button>
+            </div>
+            <div class="col-auto">
+                <a href="{{ route('transactions.index', ['type' => request('type', 'all')]) }}" class="btn btn-sm btn-link text-danger">Clear</a>
+            </div>
+        </form>
     </div>
     <div class="table-responsive">
         <table class="table table-hover mb-0">
@@ -241,3 +269,16 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    function toggleFilter() {
+        const el = document.getElementById('filterForm');
+        el.style.display = el.style.display === 'none' ? 'flex' : 'none';
+    }
+
+    @if(request('date') || request('status'))
+        document.getElementById('filterForm').style.display = 'flex';
+    @endif
+</script>
+@endpush

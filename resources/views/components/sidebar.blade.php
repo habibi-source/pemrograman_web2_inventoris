@@ -52,10 +52,5 @@
         </ul>
     </nav>
 
-    <div class="p-3 border-top">
-        <a href="{{ route('items.index', ['add' => true]) }}" class="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-2">
-            <i class="fas fa-plus"></i>
-            Add New SKU
-        </a>
-    </div>
+
 </aside>

@@ -15,10 +15,7 @@
         <p class="text-muted">Real-time inventory overview.</p>
     </div>
     <div class="d-flex gap-2">
-        <button class="btn btn-outline-primary btn-sm">
-            <i class="fas fa-calendar me-1"></i>Last 24 Hours
-        </button>
-        <a href="{{ route('dashboard.export') }}" class="btn btn-primary btn-sm">
+        <a href="{{ route('dashboard.export') }}" class="btn btn-primary btn-sm px-3">
             <i class="fas fa-download me-1"></i>Export Report
         </a>
     </div>

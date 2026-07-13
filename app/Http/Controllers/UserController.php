@@ -33,13 +33,48 @@ class UserController extends Controller
         ));
     }
 
+    public function export()
+    {
+        $users = User::latest()->get();
+
+        $filename = "users_export_" . date('Y-m-d_H-i-s') . ".csv";
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $columns = ['Name', 'Email', 'Role', 'Status', 'Last Login', 'Created At'];
+
+        $callback = function() use($users, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($users as $user) {
+                fputcsv($file, [
+                    $user->name,
+                    $user->email,
+                    $user->role,
+                    $user->status,
+                    $user->last_login_at ?? 'N/A',
+                    $user->created_at->format('Y-m-d H:i:s')
+                ]);
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|string|min:8',
-            'role' => 'required|in:admin,staff,manager,auditor',
+            'role' => 'required|in:admin,staff',
             'status' => 'required|in:active,inactive',
         ]);
 
@@ -55,7 +90,7 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,'.$user->id,
-            'role' => 'required|in:admin,staff,manager,auditor',
+            'role' => 'required|in:admin,staff',
             'status' => 'required|in:active,inactive',
         ]);
 

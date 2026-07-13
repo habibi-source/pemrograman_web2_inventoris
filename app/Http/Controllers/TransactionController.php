@@ -15,6 +15,9 @@ class TransactionController extends Controller
         if ($request->filled('type') && $request->type != 'all') {
             $query->where('type', $request->type);
         }
+        if ($request->filled('date')) {
+            $query->whereDate('created_at', $request->date);
+        }
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }

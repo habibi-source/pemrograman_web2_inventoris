@@ -96,7 +96,7 @@ class ItemController extends Controller
                     $item->item_code,
                     $item->name,
                     $item->category->name ?? 'N/A',
-                    $item->unit_price,
+                    'Rp ' . number_format($item->unit_price, 0, ',', '.'),
                     $item->stock_level,
                     $item->status,
                     $item->updated_at->format('Y-m-d H:i:s')
