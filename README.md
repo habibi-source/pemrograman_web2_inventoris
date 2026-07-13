@@ -1,3 +1,54 @@
+LogisticsPro – Warehouse & Inventory Management System
+
+LogisticsPro adalah sistem manajemen pergudangan dan inventaris (Warehouse and Inventory Management System) berbasis web/aplikasi yang dirancang untuk membantu bisnis mengotomatiskan pelacakan barang fisik, memantau tingkat stok secara real-time, serta mencatat setiap pergerakan barang keluar-masuk gudang secara akurat.
+
+Sistem ini menggantikan metode konvensional (seperti pencatatan manual atau spreadsheet) menjadi sistem digital terintegrasi guna meminimalisir human error, mencegah selisih stok, dan mempercepat proses pemenuhan pesanan (fulfillment).
+1. Fitur Utama & Arsitektur Data (Entitas)
+
+Sistem dibangun di atas 4 komponen utama (Model) yang saling terintegrasi:
+
+    Manajemen Pengguna (User Management & RBAC): Mengatur hak akses pengguna berdasarkan peran (Role-Based Access Control).
+
+        Admin: Memiliki kontrol penuh terhadap sistem (pengaturan master data, kategori, pengguna, dan laporan keuangan inventaris).
+
+        Staff: Memiliki akses terbatas, fokus pada operasional harian seperti mencatat transaksi barang masuk dan keluar.
+
+    Manajemen Kategori (Categories): Pengelompokan barang untuk mempermudah tata letak dan pencarian di dalam gudang (contoh: Electronics, Furniture, Apparel).
+
+    Manajemen Produk (Items/Inventory Master): Data master setiap produk yang disimpan di gudang. Setiap item memiliki informasi:
+
+        Kode Unik Barang (e.g., ITM-4820-X)
+
+        Kategori, Harga Satuan (Unit Price), dan Total Stok.
+
+        Status Stok Otomatis: In Stock, Low Stock (peringatan menipis), atau Out of Stock (habis).
+
+    Pencatatan Transaksi (Stock Movements): Inti dari sistem LogisticsPro. Perubahan stok tidak dilakukan secara manual, melainkan wajib melalui dokumentasi transaksi:
+
+        Incoming: Penambahan stok karena adanya barang masuk dari supplier.
+
+        Outgoing: Pengurangan stok karena adanya pengiriman barang ke pelanggan atau retur.
+
+        Setiap transaksi mencatat detail lokasi spesifik gudang (e.g., Bay-A24-Shelf-2), nomor referensi (e.g., Purchase Order PO-2026-001), dan nama staf yang bertugas.
+
+2. Alur Kerja Sistem (Workflow)
+
+    Inisialisasi & Setup: Admin mendaftarkan kategori produk dan memasukkan data master barang ke dalam sistem.
+
+    Proses Barang Masuk (Receiving): Saat pasokan baru tiba, staf gudang menginput transaksi Incoming. Staf memasukkan jumlah barang, nomor PO, dan menentukan lokasi rak penyimpanan. Sistem secara otomatis menambah total stok barang tersebut.
+
+    Proses Barang Keluar (Shipping): Saat ada pesanan, staf menginput transaksi Outgoing. Sistem secara otomatis memotong jumlah stok sesuai barang yang diambil dari rak.
+
+    Pemantauan & Dasbor (Monitoring): Admin dapat melihat dasbor utama yang menyajikan total nilai aset inventaris, grafik pergerakan barang, serta notifikasi otomatis untuk barang-barang yang berstatus Low Stock agar segera dilakukan reorder.
+
+3. Value Proposition (Nilai Jual)
+
+    Akurasi Data Mutlak: Mencegah manipulasi stok karena setiap perubahan jumlah barang harus didasari oleh bukti transaksi (Incoming/Outgoing).
+
+    Efisiensi Ruang Gudang: Fitur pelacakan lokasi (Bay & Shelf) memastikan staf tahu persis di mana barang disimpan tanpa harus mencarinya secara manual.
+
+    Pencegahan Kehabisan Stok: Fitur alert Low Stock membantu manajemen mengambil keputusan pengadaan barang (restocking) secara tepat waktu.
+   
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
