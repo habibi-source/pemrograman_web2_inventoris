@@ -1,6 +1,6 @@
 # Rancangan Aplikasi Inventaris — Laravel + Bootstrap
 
-## 1. Stack Teknologi yang Digunakan Coba Dua Arah
+## 1. Stack Teknologi yang Digunakan Coba Dua Arah Tes
 - **Framework:** Laravel 11
 - **CSS Framework:** Bootstrap 5 (via Laravel UI)
 - **Auth Scaffolding:** `laravel/ui` (`php artisan ui bootstrap --auth`)
